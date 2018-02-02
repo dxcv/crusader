@@ -1,13 +1,12 @@
 # encoding: utf-8
 import pandas as pd
 
-import const
+import agriculture.const as const
 
 from bokeh.io import curdoc
 from bokeh.layouts import column
 from bokeh.models import ColumnDataSource, NumeralTickFormatter
 from bokeh.plotting import figure
-from bokeh.palettes import Spectral9
 
 col_df = pd.read_excel(const.LIST_FNAME)
 dic = {k: v for k, v in zip(col_df[u'名称'], col_df[u'代码'])}
@@ -96,6 +95,14 @@ def update_sow():
     source_sow.data = {'date': df.index,
                        'sow': df[dic[u'能繁母猪存栏数']]}
 
+# 猪粮比
+source_pratio = ColumnDataSource(data=dict(date=[], ratio=[]))
+def update_pratio():
+    print('update pratio')
+    df = pd.read_excel(u'%s/猪粮比.xlsx'%(const.DATA_DIR))
+    source_pratio.data = {'date': df.index,
+                          'ratio': df[dic[u'猪粮比']]}
+
 # CBOT玉米期货价格
 source_cbot_corn = ColumnDataSource(data=dict(date=[], p=[]))
 def update_cbot_corn():
@@ -120,6 +127,30 @@ def update_agri200():
     source_agri200.data = {'date': df.index,
                            'index': df[dic[u'农产品批发价格200指数']]}
 
+# 猪肉产量累积同比
+source_pork_output = ColumnDataSource(data=dict(date=[], out=[]))
+def update_pork_output():
+    print('update pork output')
+    df = pd.read_excel(u'%s/猪肉产量累积同比.xlsx'%(const.DATA_DIR))
+    source_pork_output.data = {'date': df.index,
+                               'out': df[dic[u'猪肉产量累积同比']] / 100.}
+
+# 肉猪出栏头数
+source_pig_output = ColumnDataSource(data=dict(date=[], out=[]))
+def update_pig_output():
+    print('update pig output')
+    df = pd.read_excel(u'%s/肉猪出栏头数.xlsx'%(const.DATA_DIR))
+    source_pig_output.data = {'date': df.index,
+                              'out': df[dic[u'肉猪出栏头数']]}
+
+# 农村居民人均纯收入
+source_income = ColumnDataSource(data=dict(date=[], income=[]))
+def update_income():
+    print('update income')
+    df = pd.read_excel(u'%s/农村居民人均纯收入.xlsx'%(const.DATA_DIR))
+    source_income.data = {'date': df.index,
+                          'income': df[dic[u'农村居民人均纯收入']]}
+
 def update_all():
     update_cpi()
     update_agri_price()
@@ -132,6 +163,10 @@ def update_all():
     update_cbot_corn()
     update_corn()
     update_agri200()
+    update_pork_output()
+    update_pig_output()
+    update_pratio()
+    update_income()
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
@@ -186,8 +221,21 @@ plot_corn.line('date', 'p', source=source_corn, line_width=2, legend=u'批发市
 plot_agri200 = get_plot(u'农产品批发价格200指数')
 plot_agri200.line('date', 'index', source=source_agri200, line_width=2, legend=u'农产品批发价格200指数')
 
+plot_pork_output = get_plot(u'猪肉产量累积同比', pct=True)
+plot_pork_output.line('date', 'out', source=source_pork_output, line_width=2, legend=u'猪肉产量累积同比')
+
+plot_pig_output = get_plot(u'肉猪出栏头数')
+plot_pig_output.line('date', 'out', source=source_pig_output, line_width=2, legend=u'肉猪出栏头数')
+
+plot_pratio = get_plot(u'猪粮比')
+plot_pratio.line('date', 'ratio', source=source_pratio, line_width=2, legend=u'猪粮比')
+
+plot_income = get_plot(u'农村居民人均纯收入')
+plot_income.line('date', 'income', source=source_income, line_width=2, legend=u'农村居民人均纯收入')
+
 update_all()
 
-curdoc().add_root(column(plot_cpi, plot_agri_price, plot_agri_detail, plot_pork, plot_output,
-                         plot_seed, plot_pig, plot_sow, plot_cbot_corn, plot_corn, plot_agri200))
-curdoc().title = u'农林牧渔'
+curdoc().add_root(column(plot_cpi, plot_agri_price, plot_agri_detail, plot_output, plot_seed,
+                         plot_pork, plot_pig, plot_sow, plot_pork_output, plot_pig_output, plot_pratio,
+                         plot_cbot_corn, plot_corn, plot_agri200, plot_income))
+curdoc().title = u'农林牧渔中观数据库'

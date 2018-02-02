@@ -3,8 +3,8 @@ import pandas as pd
 import datetime
 import os
 
-import utils
 import const
+import utils
 
 def update():
     df = pd.read_excel(const.LIST_FNAME)
