@@ -200,7 +200,7 @@ def update_all():
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -211,72 +211,72 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_eth = get_plot(u'乙烯、聚乙烯产量同比', pct=True)
+plot_eth = get_plot(u'乙烯、聚乙烯产量同比（月）', pct=True)
 plot_eth.line('date', 'eth', source=source_eth, line_width=2, legend=u'乙烯产量')
 plot_eth.line('date', 'pol', source=source_eth, line_width=2, color='green', legend=u'聚乙烯产量')
 
-plot_soda = get_plot(u'纯碱产量', pct=True)
+plot_soda = get_plot(u'纯碱产量（月）', pct=True)
 plot_soda.line('date', 'prod', source=source_soda, line_width=2, legend=u'纯碱产量')
 
-plot_car = get_plot(u'尿素产量、出口量同比', pct=True)
+plot_car = get_plot(u'尿素产量、出口量同比（月）', pct=True)
 plot_car.line('date', 'prod', source=source_car, line_width=2, legend=u'尿素产量')
 plot_car.line('date', 'out', source=source_car, line_width=2, color='green', legend=u'尿素出口量')
 
-plot_pot = get_plot(u'钾肥产量、出口量同比', pct=True)
+plot_pot = get_plot(u'钾肥产量、出口量同比（月）', pct=True)
 plot_pot.line('date', 'prod', source=source_pot, line_width=2, legend=u'钾肥产量')
 plot_pot.line('date', 'out', source=source_pot, line_width=2, color='green', legend=u'钾肥出口量')
 
-plot_ter = get_plot(u'涤纶产量', pct=True)
+plot_ter = get_plot(u'涤纶产量（季）', pct=True)
 plot_ter.line('date', 'prod', source=source_ter, line_width=2, legend=u'涤纶产量')
 
-plot_ep = get_plot(u'东南亚乙烯、LDPE价格')
+plot_ep = get_plot(u'东南亚乙烯、LDPE价格（周）')
 plot_ep.line('date', 'p', source=source_ep, line_width=2, legend=u'东南亚乙烯价格')
 plot_ep.line('date', 'ldpe', source=source_ep, line_width=2, color='green', legend=u'东南亚LDPE价格')
 
-plot_lsoda = get_plot(u'轻质纯碱价格')
+plot_lsoda = get_plot(u'轻质纯碱价格（周）')
 plot_lsoda.line('date', 'p', source=source_lsoda, line_width=2, legend=u'轻质纯碱价格')
 
-plot_dcar = get_plot(u'国内尿素出厂价')
+plot_dcar = get_plot(u'国内尿素出厂价（周）')
 plot_dcar.line('date', 'p', source=source_dcar, line_width=2, legend=u'国内尿素出厂价')
 
-plot_potp = get_plot(u'盐湖钾肥出厂价')
+plot_potp = get_plot(u'盐湖钾肥出厂价（季）')
 plot_potp.line('date', 'p', source=source_potp, line_width=2, legend=u'盐湖钾肥出厂价')
 
-plot_chpot = get_plot(u'氯化钾温哥华FOB')
+plot_chpot = get_plot(u'氯化钾温哥华FOB（周）')
 plot_chpot.line('date', 'p', source=source_chpot, line_width=2, legend=u'氯化钾温哥华FOB')
 
-plot_ster = get_plot(u'涤纶短纤价格')
+plot_ster = get_plot(u'涤纶短纤价格（周）')
 plot_ster.line('date', 'p', source=source_ster, line_width=2, legend=u'涤纶短纤价格')
 
-plot_nap = get_plot(u'新加坡石脑油价格')
+plot_nap = get_plot(u'新加坡石脑油价格（日）')
 plot_nap.line('date', 'p', source=source_nap, line_width=2, legend=u'新加坡石脑油价格')
 
-plot_pta = get_plot(u'PTA价格')
+plot_pta = get_plot(u'PTA价格（日）')
 plot_pta.line('date', 'p', source=source_pta, line_width=2, legend=u'PTA价格')
 
-plot_meg = get_plot(u'MEG价格')
+plot_meg = get_plot(u'MEG价格（日）')
 plot_meg.line('date', 'p', source=source_meg, line_width=2, legend=u'MEG价格')
 
-plot_oecd = get_plot(u'OECD工业生产指数')
+plot_oecd = get_plot(u'OECD工业生产指数（月）')
 plot_oecd.line('date', 'index', source=source_oecd, line_width=2, legend=u'OECD工业生产指数')
 
-plot_glass = get_plot(u'平板玻璃产量同比', pct=True)
+plot_glass = get_plot(u'平板玻璃产量同比（月）', pct=True)
 plot_glass.line('date', 'prod', source=source_glass, line_width=2, legend=u'平板玻璃产量')
 
-plot_auto = get_plot(u'汽车产量同比', pct=True)
+plot_auto = get_plot(u'汽车产量同比（月）', pct=True)
 plot_auto.line('date', 'prod', source=source_auto, line_width=2, legend=u'汽车产量')
 
-plot_est = get_plot(u'房地产新开工面积、房地产投资开发增速同比', pct=True)
+plot_est = get_plot(u'房地产新开工面积、房地产投资开发增速同比（月）', pct=True)
 plot_est.line('date', 'new', source=source_est, line_width=2, legend=u'房地产新开工面积')
 plot_est.line('date', 'inc', source=source_est, line_width=2, color='green', legend=u'房地产投资开发增速')
 
-plot_corn = get_plot(u'国际玉米期货价格')
+plot_corn = get_plot(u'国际玉米期货价格（日）')
 plot_corn.line('date', 'p', source=source_corn, line_width=2, legend=u'国际玉米期货价格')
 
-plot_spin = get_plot(u'纺织品出口量同比', pct=True)
+plot_spin = get_plot(u'纺织品出口量同比（月）', pct=True)
 plot_spin.line('date', 'out', source=source_spin, line_width=2, legend=u'纺织品出口量')
 
-plot_coal = get_plot(u'秦皇岛港6000大卡大同优混平仓价')
+plot_coal = get_plot(u'秦皇岛港6000大卡大同优混平仓价（周）')
 plot_coal.line('date', 'p', source=source_coal, line_width=2, legend=u'秦皇岛港6000大卡大同优混平仓价')
 
 update_all()

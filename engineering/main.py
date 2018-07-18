@@ -98,7 +98,7 @@ def update_all():
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -109,31 +109,31 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_income = get_plot(u'工程机械主营业务收入')
+plot_income = get_plot(u'工程机械主营业务收入（年）')
 plot_income.line('date', 'income', source=source_income, line_width=2, legend=u'工程机械主营业务收入')
 
-plot_excavator = get_plot(u'挖掘机销量同比增速', pct=True)
+plot_excavator = get_plot(u'挖掘机销量同比增速（月）', pct=True)
 plot_excavator.line('date', 'vol', source=source_excavator, line_width=2, legend=u'挖掘机销量同比增速')
 
-plot_dozer = get_plot(u'推土机销量、出口量同比增速', pct=True)
+plot_dozer = get_plot(u'推土机销量、出口量同比增速（月）', pct=True)
 plot_dozer.line('date', 'vol', source=source_dozer, line_width=2, legend=u'推土机销量同比增速')
 plot_dozer.line('date', 'out', source=source_dozer, line_width=2, color='green', legend=u'推土机出口量同比增速')
 
-plot_ban = get_plot(u'20mm普板平均价')
+plot_ban = get_plot(u'20mm普板平均价（月）')
 plot_ban.line('date', 'p', source=source_ban, line_width=2, legend=u'20mm普板平均价')
 
-plot_load = get_plot(u'装载机销量', pct=True)
+plot_load = get_plot(u'装载机销量（月）', pct=True)
 plot_load.line('date', 'vol', source=source_load, line_width=2, legend=u'装载机销量')
 
-plot_crane = get_plot(u'履带式起重机销量', pct=True)
+plot_crane = get_plot(u'履带式起重机销量（月）', pct=True)
 plot_crane.line('date', 'vol', source=source_crane, line_width=2, legend=u'履带式起重机销量')
 
-plot_invest = get_plot(u'固定资产投资、房地产新开工面积、基础设施投资增速', pct=True)
+plot_invest = get_plot(u'固定资产投资、房地产新开工面积、基础设施投资增速（月）', pct=True)
 plot_invest.line('date', 'city', source=source_invest, line_width=2, legend=u'固定资产投资增速')
 plot_invest.line('date', 'house', source=source_invest, line_width=2, color='green', legend=u'房地产新开工面积增速')
 plot_invest.line('date', 'base', source=source_invest, line_width=2, color='red', legend=u'基础设施投资增速')
 
-plot_output = get_plot(u'出口总额同比增速', pct=True)
+plot_output = get_plot(u'出口总额同比增速（日）', pct=True)
 plot_output.line('date', 'inc', source=source_out, line_width=2, legend=u'出口总额同比增速')
 
 plot_crb = get_plot(u'CRB指数')

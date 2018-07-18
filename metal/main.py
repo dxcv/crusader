@@ -25,6 +25,15 @@ def update_copper_p():
     source_copper_p.data = {'date': df.index,
                             'p': df[dic[u'LME铜三个月期货价格']]}
 
+# 铜油比
+source_copper_oil = ColumnDataSource(data=dict(date=[], ratio=[]))
+def update_copper_oil():
+    df = pd.read_excel(u'%s/LME铜三个月期货价格.xlsx'%(const.DATA_DIR))
+    tdf = pd.read_excel(u'%s/Brent油价.xlsx'%(const.DATA_DIR))
+    df = df.merge(tdf, how='outer', left_index=True, right_index=True)
+    df = df.fillna(method='ffill')
+    source_copper_oil.data = {'date': df.index, 'ratio': df[dic[u'LME铜三个月期货价格']] / df[dic[u'Brent油价']]}
+
 # LME铜库存、上交所铜库存
 source_copper_inv = ColumnDataSource(data=dict(date=[], lme=[], sh=[]))
 def update_copper_inv():
@@ -201,10 +210,11 @@ def update_all():
     update_car()
     update_ice()
     update_air()
+    update_copper_oil()
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -215,82 +225,85 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_copper_prod = get_plot(u'铜产量同比', pct=True)
+plot_copper_prod = get_plot(u'铜产量同比（月）', pct=True)
 plot_copper_prod.line('date', 'prod', source=source_copper_prod, line_width=2, legend=u'铜产量')
 
-plot_copper_p = get_plot(u'LME铜三个月期货价格')
+plot_copper_p = get_plot(u'LME铜三个月期货价格（日）')
 plot_copper_p.line('date', 'p', source=source_copper_p, line_width=2, legend=u'LME铜三个月期货价格')
 
-plot_copper_inv = get_plot(u'LME铜库存')
+plot_copper_oil = get_plot(u'铜油比（日）')
+plot_copper_oil.line('date', 'ratio', source=source_copper_oil, line_width=2, legend=u'铜油比')
+
+plot_copper_inv = get_plot(u'LME铜库存（日）')
 plot_copper_inv.line('date', 'lme', source=source_copper_inv, line_width=2, legend=u'LME铜库存')
 plot_copper_inv.line('date', 'sh', source=source_copper_inv, line_width=2, color='green', legend=u'上交所铜库存')
 
-plot_alum_prod = get_plot(u'铝产量同比', pct=True)
+plot_alum_prod = get_plot(u'铝产量同比（月）', pct=True)
 plot_alum_prod.line('date', 'prod', source=source_alum_prod, line_width=2, legend=u'铝产量')
 
-plot_alum_p = get_plot(u'LME铝三个月期货价格')
+plot_alum_p = get_plot(u'LME铝三个月期货价格（日）')
 plot_alum_p.line('date', 'p', source=source_alum_p, line_width=2, legend=u'LME铝三个月期货价格')
 
-plot_alum_inv = get_plot(u'LME铝库存')
+plot_alum_inv = get_plot(u'LME铝库存（日）')
 plot_alum_inv.line('date', 'lme', source=source_alum_inv, line_width=2, legend=u'LME铝库存')
 plot_alum_inv.line('date', 'sh', source=source_alum_inv, line_width=2, color='green', legend=u'上交所铝库存')
 
-plot_plum_prod = get_plot(u'铅产量同比', pct=True)
+plot_plum_prod = get_plot(u'铅产量同比（月）', pct=True)
 plot_plum_prod.line('date', 'prod', source=source_plum_prod, line_width=2, legend=u'铅产量')
 
-plot_plum_p = get_plot(u'LME铅三个月期货价格')
+plot_plum_p = get_plot(u'LME铅三个月期货价格（日）')
 plot_plum_p.line('date', 'p', source=source_plum_p, line_width=2, legend=u'LME铅三个月期货价格')
 
-plot_plum_inv = get_plot(u'LME铅库存')
+plot_plum_inv = get_plot(u'LME铅库存（日）')
 plot_plum_inv.line('date', 'lme', source=source_plum_inv, line_width=2, legend=u'LME铅库存')
 plot_plum_inv.line('date', 'sh', source=source_plum_inv, line_width=2, color='green', legend=u'上交所铅库存')
 
-plot_zinc_prod = get_plot(u'锌产量同比', pct=True)
+plot_zinc_prod = get_plot(u'锌产量同比（月）', pct=True)
 plot_zinc_prod.line('date', 'prod', source=source_zinc_prod, line_width=2, legend=u'锌产量')
 
-plot_zinc_p = get_plot(u'LME锌三个月期货价格')
+plot_zinc_p = get_plot(u'LME锌三个月期货价格（日）')
 plot_zinc_p.line('date', 'p', source=source_zinc_p, line_width=2, legend=u'LME锌三个月期货价格')
 
-plot_zinc_inv = get_plot(u'LME锌库存')
+plot_zinc_inv = get_plot(u'LME锌库存（日）')
 plot_zinc_inv.line('date', 'lme', source=source_zinc_inv, line_width=2, legend=u'LME锌库存')
 plot_zinc_inv.line('date', 'sh', source=source_zinc_inv, line_width=2, color='green', legend=u'上交所锌库存')
 
-plot_copper_mine = get_plot(u'20-23%江西上饶铜精矿价格')
+plot_copper_mine = get_plot(u'20-23%江西上饶铜精矿价格（日）')
 plot_copper_mine.line('date', 'p', source=source_copper_mine, line_width=2, legend=u'20-23%江西上饶铜精矿价格')
 
-plot_alumina = get_plot(u'国产现货氧化铝价格')
+plot_alumina = get_plot(u'国产现货氧化铝价格（日）')
 plot_alumina.line('date', 'p', source=source_alum_p, line_width=2, legend=u'国产现货氧化铝价格')
 
-plot_plum_mine = get_plot(u'河南60%min铅精矿价格')
+plot_plum_mine = get_plot(u'河南60%min铅精矿价格（日）')
 plot_plum_mine.line('date', 'p', source=source_plum_mine, line_width=2, legend=u'河南60%min铅精矿价格')
 
-plot_zinc_mine = get_plot(u'河池50%锌精矿价格')
+plot_zinc_mine = get_plot(u'河池50%锌精矿价格（日）')
 plot_zinc_mine.line('date', 'p', source=source_zinc_mine, line_width=2, legend=u'河池50%锌精矿价格')
 
-plot_coal = get_plot(u'山西古交2#焦煤车板含税价')
+plot_coal = get_plot(u'山西古交2#焦煤车板含税价（周）')
 plot_coal.line('date', 'p', source=source_coal, line_width=2, legend=u'山西古交2#焦煤车板含税价')
 
-plot_bdi = get_plot(u'波罗的海干散货指数（BDI）')
+plot_bdi = get_plot(u'波罗的海干散货指数（BDI）（日）')
 plot_bdi.line('date', 'bdi', source=source_bdi, line_width=2, legend=u'BDI')
 
-plot_oecd = get_plot(u'OECD全球领先指数')
+plot_oecd = get_plot(u'OECD全球领先指数（季）')
 plot_oecd.line('date', 'index', source=source_oecd, line_width=2, legend=u'OECD全球领先指数')
 
-plot_estate = get_plot(u'中国房地产新开工面积同比', pct=True)
+plot_estate = get_plot(u'中国房地产新开工面积同比（月）', pct=True)
 plot_estate.line('date', 'new', source=source_estate, line_width=2, legend=u'中国房地产新开工面积')
 
-plot_car = get_plot(u'中国汽车产量同比', pct=True)
+plot_car = get_plot(u'中国汽车产量同比（月）', pct=True)
 plot_car.line('date', 'prod', source=source_car, line_width=2, legend=u'中国汽车产量')
 
-plot_ice = get_plot(u'中国冰箱产量', pct=True)
+plot_ice = get_plot(u'中国冰箱产量（月）', pct=True)
 plot_ice.line('date', 'ice', source=source_ice, line_width=2, legend=u'中国冰箱产量')
 
-plot_air = get_plot(u'中国空调产量', pct=True)
+plot_air = get_plot(u'中国空调产量（月）', pct=True)
 plot_air.line('date', 'air', source=source_air, line_width=2, legend=u'中国空调产量')
 
 update_all()
 
-curdoc().add_root(column(plot_copper_prod, plot_copper_p, plot_copper_inv,
+curdoc().add_root(column(plot_copper_prod, plot_copper_p, plot_copper_oil, plot_copper_inv,
                          plot_alum_prod, plot_alum_p, plot_alum_inv,
                          plot_plum_prod, plot_plum_p, plot_plum_inv,
                          plot_zinc_prod, plot_zinc_p, plot_zinc_inv,

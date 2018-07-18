@@ -62,7 +62,7 @@ def update_city2():
 source_index = ColumnDataSource(data=dict(date=[], index=[]))
 def update_index():
     df = pd.read_excel(u'%s/全国七十个大中城市房屋销售价格指数.xlsx'%(const.DATA_DIR))
-    source_index.data = {'date': df.index, 'index': df[dic[u'全国七十个大中城市房屋销售价格指数']]}
+    source_index.data = {'date': df.index, 'index': df[dic[u'全国七十个大中城市房屋销售价格指数']] / 10}
 
 # 全国商品房销售均价
 source_price = ColumnDataSource(data=dict(date=[], p=[]))
@@ -141,7 +141,7 @@ def update_all():
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -152,46 +152,46 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_sell = get_plot(u'全国商品房销售面积、销售额同比', pct=True)
+plot_sell = get_plot(u'全国商品房销售面积、销售额同比（月）', pct=True)
 plot_sell.line('date', 'area', source=source_sell, line_width=2, legend=u'全国商品房销售面积')
 plot_sell.line('date', 'sell', source=source_sell, line_width=2, color='green', legend=u'全国商品房销售额')
 
-plot_city1 = get_plot(u'一线城市商品房销售面积同比', pct=True)
+plot_city1 = get_plot(u'一线城市商品房销售面积同比（月）', pct=True)
 plot_city1.line('date', 'bj', source=source_city1, line_width=2, legend=u'北京商品房销售面积')
 plot_city1.line('date', 'sh', source=source_city1, line_width=2, color='green', legend=u'上海商品房销售面积')
 plot_city1.line('date', 'sz', source=source_city1, line_width=2, color='red', legend=u'深圳商品房销售面积')
 plot_city1.line('date', 'gz', source=source_city1, line_width=2, color='gray', legend=u'广州商品房销售面积')
 
-plot_city2 = get_plot(u'二线城市商品房销售面积同比', pct=True)
+plot_city2 = get_plot(u'二线城市商品房销售面积同比（月）', pct=True)
 plot_city2.line('date', 'tj', source=source_city2, line_width=2, legend=u'天津商品房销售面积')
 plot_city2.line('date', 'nj', source=source_city2, line_width=2, color='green', legend=u'南京商品房销售面积')
 plot_city2.line('date', 'sz', source=source_city2, line_width=2, color='red', legend=u'苏州商品房销售面积')
 plot_city2.line('date', 'cd', source=source_city2, line_width=2, color='gray', legend=u'成都商品房销售面积')
 plot_city2.line('date', 'wh', source=source_city2, line_width=2, color='yellow', legend=u'武汉商品房销售面积')
 
-plot_index = get_plot(u'全国七十个大中城市房屋销售价格指数同比', pct=True)
-plot_index.line('date', 'index', source=source_index, line_width=2, legend=u'全国七十个大中城市房屋销售价格指数')
+plot_index = get_plot(u'全国七十个大中城市房屋销售价格指数同比：当月同比（月）', pct=True)
+plot_index.line('date', 'index', source=source_index, line_width=2, legend=u'全国七十个大中城市房屋销售价格指数：当月同比')
 
-plot_price = get_plot(u'全国商品房销售均价')
+plot_price = get_plot(u'全国商品房销售均价（月）')
 plot_price.line('date', 'p', source=source_price, line_width=2, legend=u'全国商品房销售均价')
 
-plot_house = get_plot(u'房地产新开工、施工、竣工面积同比', pct=True)
+plot_house = get_plot(u'房地产新开工、施工、竣工面积同比（月）', pct=True)
 plot_house.line('date', 'new', source=source_house, line_width=2, legend=u'房地产新开工面积')
 plot_house.line('date', 'build', source=source_house, line_width=2, color='green', legend=u'房地产施工面积')
 plot_house.line('date', 'done', source=source_house, line_width=2, color='red', legend=u'房地产竣工面积')
 
-plot_invest = get_plot(u'房地产投资总额、房地产开发投资资金来源同比', pct=True)
+plot_invest = get_plot(u'房地产投资总额、房地产开发投资资金来源同比（月）', pct=True)
 plot_invest.line('date', 'inv', source=source_invest, line_width=2, legend=u'房地产投资总额')
 plot_invest.line('date', 'src', source=source_invest, line_width=2, color='green', legend=u'房地产开发投资资金来源')
 
-plot_land = get_plot(u'土地购置费同比', pct=True)
+plot_land = get_plot(u'土地购置费同比（月）', pct=True)
 plot_land.line('date', 'land', source=source_land, line_width=2, legend=u'土地购置费')
 
-plot_money = get_plot(u'M1、M2', pct=True)
+plot_money = get_plot(u'M1、M2（月）', pct=True)
 plot_money.line('date', 'm1', source=source_money, line_width=2, legend='M1')
 plot_money.line('date', 'm2', source=source_money, line_width=2, color='green', legend=u'M2')
 
-plot_prod = get_plot(u'水泥、平板玻璃、冰箱、空调产量同比', pct=True)
+plot_prod = get_plot(u'水泥、平板玻璃、冰箱、空调产量同比（月）', pct=True)
 plot_prod.line('date', 'cement', source=source_prod, line_width=2, legend=u'水泥产量')
 plot_prod.line('date', 'glass', source=source_prod, line_width=2, color='green', legend=u'平板玻璃产量')
 plot_prod.line('date', 'air', source=source_prod, line_width=2, color='red', legend=u'冰箱产量')

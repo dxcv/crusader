@@ -22,6 +22,16 @@ def update_cars():
                         'sell': df[dic[u'乘用车销量']] / 100,
                         'prod': df[dic[u'乘用车产量']] / 100}
 
+# 新能源汽车销量
+source_new = ColumnDataSource(data=dict(date=[], sell=[], prod=[]))
+def update_new():
+    df = pd.read_excel(u'%s/新能源汽车销量.xlsx'%(const.DATA_DIR))
+    tdf = pd.read_excel(u'%s/新能源汽车产量.xlsx'%(const.DATA_DIR))
+    df = df.merge(tdf, how='outer', left_index=True, right_index=True)
+    source_new.data = {'date': df.index,
+                       'sell': df[dic[u'新能源汽车销量']].pct_change(12),
+                       'prod': df[dic[u'新能源汽车产量']].pct_change(12)}
+
 # 轿车销量、产量、出口
 source_auto = ColumnDataSource(data=dict(date=[], sell=[], prod=[], out=[]))
 def update_auto():
@@ -157,10 +167,11 @@ def update_all():
     update_glass()
     update_road()
     update_bdi()
+    update_new()
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -171,57 +182,61 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_cars = get_plot(u'乘用车销量、产量同比', pct=True)
+plot_cars = get_plot(u'乘用车销量、产量同比（月）', pct=True)
 plot_cars.line('date', 'sell', source=source_cars, line_width=2, legend=u'乘用车销量同比')
 plot_cars.line('date', 'prod', source=source_cars, line_width=2, color='green', legend=u'乘用车产量同比')
 
-plot_auto = get_plot(u'轿车销量、产量同比', pct=True)
+plot_new = get_plot(u'新能源汽车销量、产量同比（季）', pct=True)
+plot_new.line('date', 'sell', source=source_new, line_width=2, legend=u'新能源汽车销量同比')
+plot_new.line('date', 'prod', source=source_new, line_width=2, color='green', legend=u'新能源汽车产量同比')
+
+plot_auto = get_plot(u'轿车销量、产量同比（月）', pct=True)
 plot_auto.line('date', 'sell', source=source_auto, line_width=2, legend=u'轿车销量同比')
 plot_auto.line('date', 'prod', source=source_auto, line_width=2, color='green', legend=u'轿车产量同比')
 plot_auto.line('date', 'out', source=source_auto, line_width=2, color='red', legend=u'轿车出口量同比')
 
-plot_van = get_plot(u'载货车产量同比', pct=True)
+plot_van = get_plot(u'载货车产量同比（年）', pct=True)
 plot_van.line('date', 'prod', source=source_van, line_width=2, legend=u'载货车产量')
 
-plot_money = get_plot(u'M1、M2', pct=True)
+plot_money = get_plot(u'M1、M2（月）', pct=True)
 plot_money.line('date', 'm1', source=source_money, line_width=2, legend='M1')
 plot_money.line('date', 'm2', source=source_money, line_width=2, color='green', legend=u'M2')
 
-plot_invest = get_plot(u'固定资产投资、房地产新开工面积', pct=True)
+plot_invest = get_plot(u'固定资产投资、房地产新开工面积（月）', pct=True)
 plot_invest.line('date', 'city', source=source_invest, line_width=2, legend=u'固定资产投资增速')
 plot_invest.line('date', 'house', source=source_invest, line_width=2, color='green', legend=u'房地产新开工面积增速')
 
-plot_coal = get_plot(u'原煤产量、煤进口量同比', pct=True)
+plot_coal = get_plot(u'原煤产量、煤进口量同比（月）', pct=True)
 plot_coal.line('date', 'prod', source=source_coal, line_width=2, legend=u'原煤产量同比')
 plot_coal.line('date', 'inp', source=source_coal, line_width=2, color='green', legend=u'煤进口量同比')
 
-plot_iron = get_plot(u'铁矿石原矿量产量、铁矿砂及其精矿进口量同比', pct=True)
+plot_iron = get_plot(u'铁矿石原矿量产量、铁矿砂及其精矿进口量同比（月）', pct=True)
 plot_iron.line('date', 'prod', source=source_iron, line_width=2, legend=u'铁矿石原矿量产量同比')
 plot_iron.line('date', 'inp', source=source_iron, line_width=2, color='green', legend=u'铁矿砂及其精矿进口量同比')
 
-plot_copper = get_plot(u'铜材产量、铜材进口量同比', pct=True)
+plot_copper = get_plot(u'铜材产量、铜材进口量同比（月）', pct=True)
 plot_copper.line('date', 'prod', source=source_copper, line_width=2, legend=u'铜材产量同比')
 plot_copper.line('date', 'inp', source=source_copper, line_width=2, color='green', legend=u'铜材进口量同比')
 
-plot_steel = get_plot(u'粗钢产量、钢材出口量同比', pct=True)
+plot_steel = get_plot(u'粗钢产量、钢材出口量同比（月）', pct=True)
 plot_steel.line('date', 'prod', source=source_steel, line_width=2, legend=u'粗钢产量同比')
 plot_steel.line('date', 'out', source=source_steel, line_width=2, color='green', legend=u'钢材出口量同比')
 
-plot_rubber = get_plot(u'丁苯橡胶价格')
+plot_rubber = get_plot(u'丁苯橡胶价格（周）')
 plot_rubber.line('date', 'p', source=source_rubber, line_width=2, legend=u'丁苯橡胶价格')
 
-plot_glass = get_plot(u'平板玻璃价格指数')
+plot_glass = get_plot(u'平板玻璃价格指数（周）')
 plot_glass.line('date', 'p', source=source_glass, line_width=2, legend=u'平板玻璃价格指数')
 
-plot_road = get_plot(u'公路货运量、公路货运周转量同比', pct=True)
+plot_road = get_plot(u'公路货运量、公路货运周转量同比（月）', pct=True)
 plot_road.line('date', 'vol', source=source_road, line_width=2, legend=u'公路货运量同比')
 plot_road.line('date', 'turn', source=source_road, line_width=2, color='green', legend=u'公路货运周转量同比')
 
-plot_bdi = get_plot(u'波罗的海干散货指数（BDI）')
+plot_bdi = get_plot(u'波罗的海干散货指数（BDI）（日）')
 plot_bdi.line('date', 'bdi', source=source_bdi, line_width=2, legend=u'BDI')
 
 update_all()
 
-curdoc().add_root(column(plot_cars, plot_auto, plot_van, plot_money, plot_invest, plot_coal, plot_iron,
+curdoc().add_root(column(plot_cars, plot_auto, plot_new, plot_van, plot_money, plot_invest, plot_coal, plot_iron,
                          plot_copper, plot_steel, plot_rubber, plot_glass, plot_road, plot_bdi))
 curdoc().title = u'乘用车中观数据库'

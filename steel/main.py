@@ -105,11 +105,23 @@ def update_raw():
                        'ty': df[dic[u'山西太原古交2#焦煤车板含税价']],
                        'jz': df[dic[u'华北山西晋中二级冶金焦含税车板成交平均价']]}
 
+# 高炉开工率
+source_open = ColumnDataSource(data=dict(date=[], open=[]))
+def update_open():
+    df = pd.read_excel(u'%s/高炉开工率.xlsx'%(const.DATA_DIR))
+    source_open.data = {'date': df.index, 'open': df[dic[u'高炉开工率']] / 100}
+
 # 新加坡铁矿石掉期合同
 source_st = ColumnDataSource(data=dict(date=[], p=[]))
 def update_st():
     df = pd.read_excel(u'%s/新加坡铁矿石掉期合同.xlsx'%(const.DATA_DIR))
     source_st.data = {'date': df.index, 'p': df[dic[u'新加坡铁矿石掉期合同']]}
+
+# 中国铁矿石价格指数
+source_stp = ColumnDataSource(data=dict(date=[], p=[]))
+def update_stp():
+    df = pd.read_excel(u'%s/中国铁矿石价格指数.xlsx'%(const.DATA_DIR))
+    source_stp.data = {'date': df.index, 'p': df[dic[u'中国铁矿石价格指数']]}
 
 # 下游产品产量
 source_down = ColumnDataSource(data=dict(date=[], ice=[], mec=[], boat=[], car=[]))
@@ -137,10 +149,12 @@ def update_all():
     update_raw()
     update_st()
     update_down()
+    update_open()
+    update_stp()
 
 def get_plot(title, pct=False):
     tools = "pan,wheel_zoom,box_select,reset"
-    plot = figure(plot_height=400, plot_width=1000, tools=tools, x_axis_type='datetime')
+    plot = figure(plot_height=500, plot_width=1200, tools=tools, x_axis_type='datetime')
     plot.title.text_font_size = "15pt"
     plot.title.text_font = "Microsoft YaHei"
     plot.yaxis.minor_tick_line_color = None
@@ -151,49 +165,55 @@ def get_plot(title, pct=False):
         plot.yaxis.formatter = NumeralTickFormatter(format='0.00')
     return plot
 
-plot_prod = get_plot(u'钢材产量同比', pct=True)
+plot_prod = get_plot(u'钢材产量同比（月）', pct=True)
 plot_prod.line('date', 'st', source=source_prod, line_width=2, legend=u'生铁产量')
 plot_prod.line('date', 'cg', source=source_prod, line_width=2, color='green', legend=u'粗钢产量')
 plot_prod.line('date', 'lwg', source=source_prod, line_width=2, color='red', legend=u'螺纹钢产量')
 plot_prod.line('date', 'lz', source=source_prod, line_width=2, color='gray', legend=u'冷轧产量')
 
-plot_inv = get_plot(u'钢材社会库存同比', pct=True)
+plot_inv = get_plot(u'钢材社会库存同比（周）', pct=True)
 plot_inv.line('date', 'tot', source=source_inv, line_width=2, legend=u'钢材总社会库存')
 plot_inv.line('date', 'lwg', source=source_inv, line_width=2, color='red', legend=u'螺纹钢社会库存')
 plot_inv.line('date', 'rj', source=source_inv, line_width=2, color='green', legend=u'热卷社会库存')
 plot_inv.line('date', 'lz', source=source_inv, line_width=2, color='gray', legend=u'冷轧社会库存')
 
-plot_pri = get_plot(u'钢材价格')
+plot_pri = get_plot(u'钢材价格（周）')
 plot_pri.line('date', 'lwg', source=source_pri, line_width=2, legend=u'上海25毫米螺纹钢价格')
 plot_pri.line('date', 'rj', source=source_pri, line_width=2, color='green', legend=u'上海5.5毫米热卷价格')
 plot_pri.line('date', 'lz', source=source_pri, line_width=2, color='red', legend=u'上海1.0毫米冷轧价格')
 
-plot_inp = get_plot(u'钢材进出口量同比', pct=True)
+plot_inp = get_plot(u'钢材进出口量同比（月）', pct=True)
 plot_inp.line('date', 'inp', source=source_inp, line_width=2, legend=u'钢材进口量')
 plot_inp.line('date', 'out', source=source_inp, line_width=2, color='green', legend=u'钢材出口量')
 
-plot_fac = get_plot(u'钢材出厂价格')
+plot_fac = get_plot(u'钢材出厂价格（周）')
 plot_fac.line('date', 'bg', source=source_fac, line_width=2, legend=u'宝钢出厂价格')
 plot_fac.line('date', 'ag', source=source_fac, line_width=2, color='green', legend=u'鞍钢出厂价格')
 plot_fac.line('date', 'sg', source=source_fac, line_width=2, color='red', legend=u'沙钢出厂价格')
 plot_fac.line('date', 'hg', source=source_fac, line_width=2, color='gray', legend=u'河北钢铁出厂价格')
 
-plot_raw = get_plot(u'原材料价格')
+plot_raw = get_plot(u'原材料价格（周）')
 plot_raw.line('date', 'tj', source=source_raw, line_width=2, legend=u'天津港港口63.5%印度粉现汇车板平均价')
 plot_raw.line('date', 'ts', source=source_raw, line_width=2, color='green', legend=u'唐山地区66%酸性铁精粉含税出厂平均价')
 plot_raw.line('date', 'ty', source=source_raw, line_width=2, color='red', legend=u'山西太原古交2#焦煤车板含税价')
 plot_raw.line('date', 'jz', source=source_raw, line_width=2, color='gray', legend=u'华北山西晋中二级冶金焦含税车板成交平均价')
 
-plot_st = get_plot(u'新加坡铁矿石掉期合同')
+plot_st = get_plot(u'新加坡铁矿石掉期合同（日）')
 plot_st.line('date', 'p', source=source_st, line_width=2, legend=u'新加坡铁矿石掉期合同')
 
-plot_down = get_plot(u'下游产品产量', pct=True)
+plot_down = get_plot(u'下游产品产量（月）', pct=True)
 plot_down.line('date', 'mec', source=source_down, line_width=2, legend=u'机床产量')
 plot_down.line('date', 'boat', source=source_down, line_width=2, color='green', legend=u'船舶产量')
 plot_down.line('date', 'car', source=source_down, line_width=2, color='red', legend=u'乘用车产量')
 plot_down.line('date', 'ice', source=source_down, line_width=2, color='gray', legend=u'冰箱产量')
 
+plot_open = get_plot(u'高炉开工率（周）', pct=True)
+plot_open.line('date', 'open', source=source_open, line_width=2, legend=u'高炉开工率')
+
+plot_stp = get_plot(u'中国铁矿石价格指数（日）')
+plot_stp.line('date', 'p', source=source_stp, line_width=2, legend=u'中国铁矿石价格指数')
+
 update_all()
 
-curdoc().add_root(column(plot_prod, plot_inv, plot_pri, plot_inp, plot_fac, plot_raw, plot_st, plot_down))
+curdoc().add_root(column(plot_prod, plot_inv, plot_pri, plot_inp, plot_fac, plot_raw, plot_open, plot_stp, plot_st, plot_down))
 curdoc().title = u'钢铁中观数据库'
