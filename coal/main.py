@@ -15,7 +15,7 @@ dic = {k: v for k, v in zip(col_df[u'名称'], col_df[u'代码'])}
 source_elec = ColumnDataSource(data=dict(date=[], coal=[]))
 def update_elec():
     df = pd.read_excel(u'%s/发电累计耗用原煤.xlsx'%(const.DATA_DIR))
-    source_elec.data = {'date': df.index, 'coal': df[dic[u'发电累计耗用原煤']] / 100}
+    source_elec.data = {'date': df.index, 'coal': df[dic[u'发电累计耗用原煤']].pct_change(10)}
 
 # 六大电厂日均耗煤量
 source_elec_coal = ColumnDataSource(data=dict(date=[], coal=[]))

@@ -18,11 +18,14 @@ def update():
             df = utils.download_wind_data(code, start_date, end_date)
         else:
             df = pd.read_excel(fname)
+            if 'ErrorReport' in df.columns:
+                del df['ErrorReport']
+                df = df.drop(df.index[-1])
             start_date = df.index[-1] + datetime.timedelta(1)
             app_df = utils.download_wind_data(code, start_date, end_date)
-            if pd.to_datetime(app_df.index[0]) >= start_date:
-                df = df.append(app_df)
+            if 'ErrorReport' not in app_df.columns:
+                if pd.to_datetime(app_df.index[0]) >= start_date:
+                    df = df.append(app_df)
         df.to_excel(fname)
-
 if __name__ == '__main__':
     update()
